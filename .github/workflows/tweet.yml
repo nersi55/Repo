@@ -1,0 +1,20 @@
+name: Send Tweet Workflow
+on:
+  repository_dispatch:
+    types: [send-tweet]
+
+jobs:
+  send-tweet:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Setup Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: '16'
+      - name: Install dependencies
+        run: npm ci
+      - name: Install Playwright
+        run: npx playwright install --with-deps chromium
+      - name: Run tweet script
+        run: node sendTweet.js "${{ github.event.client_payload.text }}"
